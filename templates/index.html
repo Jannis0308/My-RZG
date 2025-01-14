@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Textgenerator</title>
+</head>
+<body>
+    <h1>KI Textgenerator</h1>
+    <form id="form">
+        <textarea id="notes" rows="10" cols="50" placeholder="Gib hier deine Notizen ein..."></textarea>
+        <br>
+        <button type="submit">Text generieren</button>
+    </form>
+    <h3>Generierter Text:</h3>
+    <p id="output"></p>
+    <button id="retrain">Modell neu trainieren</button>
+
+    <script>
+        document.getElementById("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const notes = document.getElementById("notes").value;
+            const response = await fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ notes }),
+            });
+            const data = await response.json();
+            document.getElementById("output").innerText = data.text;
+        });
+
+        document.getElementById("retrain").addEventListener("click", async () => {
+            const response = await fetch("/retrain", { method: "POST" });
+            const data = await response.json();
+            alert(data.status);
+        });
+    </script>
+</body>
+</html>
